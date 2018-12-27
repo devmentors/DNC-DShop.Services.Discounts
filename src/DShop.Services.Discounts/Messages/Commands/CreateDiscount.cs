@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 namespace DShop.Services.Discounts.Messages.Commands
 {
     // Immutable
+    // Custom routing key: #.discounts.create_discount
     public class CreateDiscount : ICommand
     {
         public Guid Id { get; }

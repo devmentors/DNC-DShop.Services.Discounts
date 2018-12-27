@@ -2,6 +2,7 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using DShop.Common;
 using DShop.Common.Dispatchers;
 using DShop.Common.Mongo;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DShop.Common.Mvc;
+using DShop.Common.RabbitMq;
 using DShop.Services.Discounts.Domain;
+using DShop.Services.Discounts.Messages.Commands;
 
 namespace DShop.Services.Discounts
 {
@@ -35,6 +38,7 @@ namespace DShop.Services.Discounts
             builder.AddDispatchers();
             builder.AddMongo();
             builder.AddMongoRepository<Discount>("Discounts");
+            builder.AddRabbitMq();
 
             Container = builder.Build();
             
@@ -42,14 +46,17 @@ namespace DShop.Services.Discounts
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            IApplicationLifetime applicationLifetime)
+            IApplicationLifetime applicationLifetime, IStartupInitializer initializer)
         {
             if (env.IsDevelopment() || env.EnvironmentName == "local")
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            initializer.InitializeAsync();
             app.UseMvc();
+            app.UseRabbitMq()
+                .SubscribeCommand<CreateDiscount>();
 
             applicationLifetime.ApplicationStopped.Register(() => Container.Dispose());
         }
