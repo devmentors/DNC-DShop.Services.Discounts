@@ -13,6 +13,7 @@ using DShop.Common.Mvc;
 using DShop.Common.RabbitMq;
 using DShop.Services.Discounts.Domain;
 using DShop.Services.Discounts.Messages.Commands;
+using DShop.Services.Discounts.Messages.Events;
 
 namespace DShop.Services.Discounts
 {
@@ -37,6 +38,7 @@ namespace DShop.Services.Discounts
             builder.Populate(services);
             builder.AddDispatchers();
             builder.AddMongo();
+            builder.AddMongoRepository<Customer>("Customers");
             builder.AddMongoRepository<Discount>("Discounts");
             builder.AddRabbitMq();
 
@@ -56,7 +58,8 @@ namespace DShop.Services.Discounts
             initializer.InitializeAsync();
             app.UseMvc();
             app.UseRabbitMq()
-                .SubscribeCommand<CreateDiscount>();
+                .SubscribeCommand<CreateDiscount>()
+                .SubscribeEvent<CustomerCreated>();
 
             applicationLifetime.ApplicationStopped.Register(() => Container.Dispose());
         }

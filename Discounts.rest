@@ -1,4 +1,4 @@
-@url = http://localhost:5010
+@url = http://localhost:5000
 
 ### create discount
 POST {{url}}/discounts
