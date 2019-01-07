@@ -8,11 +8,13 @@ namespace DShop.Services.Discounts.Messages.Events
     public class CustomerCreated : IEvent
     {
         public Guid Id { get; }
+        public string Email { get; }
 
         [JsonConstructor]
-        public CustomerCreated(Guid id)
+        public CustomerCreated(Guid id, string email)
         {
             Id = id;
+            Email = email;
         }
     }
 }

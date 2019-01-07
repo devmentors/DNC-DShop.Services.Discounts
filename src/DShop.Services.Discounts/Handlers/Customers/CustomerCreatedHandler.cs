@@ -22,7 +22,7 @@ namespace DShop.Services.Discounts.Handlers.Customers
 
         public async Task HandleAsync(CustomerCreated @event, ICorrelationContext context)
         {
-            await _customersRepository.AddAsync(new Customer(@event.Id));
+            await _customersRepository.AddAsync(new Customer(@event.Id, @event.Email));
             _logger.LogInformation($"Created customer with id: '{@event.Id}'.");
         }
     }
