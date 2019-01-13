@@ -2,7 +2,9 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Consul;
 using DShop.Common;
+using DShop.Common.Consul;
 using DShop.Common.Dispatchers;
 using DShop.Common.Mongo;
 using Microsoft.AspNetCore.Builder;
@@ -11,9 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DShop.Common.Mvc;
 using DShop.Common.RabbitMq;
+using DShop.Common.RestEase;
 using DShop.Services.Discounts.Domain;
 using DShop.Services.Discounts.Messages.Commands;
 using DShop.Services.Discounts.Messages.Events;
+using DShop.Services.Discounts.Services;
 
 namespace DShop.Services.Discounts
 {
@@ -31,6 +35,8 @@ namespace DShop.Services.Discounts
         {
             services.AddCustomMvc();
             services.AddInitializers(typeof(IMongoDbInitializer));
+            services.AddConsul();
+            services.RegisterServiceForwarder<IOrdersService>("orders-service");
             
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
@@ -48,7 +54,8 @@ namespace DShop.Services.Discounts
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            IApplicationLifetime applicationLifetime, IStartupInitializer initializer)
+            IApplicationLifetime applicationLifetime, IStartupInitializer initializer,
+            IConsulClient consulClient)
         {
             if (env.IsDevelopment() || env.EnvironmentName == "local")
             {
@@ -59,9 +66,15 @@ namespace DShop.Services.Discounts
             app.UseMvc();
             app.UseRabbitMq()
                 .SubscribeCommand<CreateDiscount>()
-                .SubscribeEvent<CustomerCreated>();
+                .SubscribeEvent<CustomerCreated>(@namespace: "customers")
+                .SubscribeEvent<OrderCompleted>(@namespace: "orders");
+            var serviceId = app.UseConsul();
 
-            applicationLifetime.ApplicationStopped.Register(() => Container.Dispose());
+            applicationLifetime.ApplicationStopped.Register(() =>
+            {
+                consulClient.Agent.ServiceDeregister(serviceId);
+                Container.Dispose();
+            });
         }
     }
 }

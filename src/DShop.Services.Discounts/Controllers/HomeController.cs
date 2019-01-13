@@ -7,5 +7,8 @@ namespace DShop.Services.Discounts.Controllers
     {
         [HttpGet]
         public IActionResult Get() => Ok("DShop Discounts Service");
+
+        [HttpGet("ping")]
+        public IActionResult Ping() => Ok();
     }
 }
