@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using DShop.Common.Handlers;
 using DShop.Common.RabbitMq;
+using DShop.Common.Types;
 using DShop.Services.Discounts.Domain;
 using DShop.Services.Discounts.Messages.Commands;
 using DShop.Services.Discounts.Messages.Events;
@@ -25,6 +26,9 @@ namespace DShop.Services.Discounts.Handlers.Discounts
             _busPublisher = busPublisher;
             _logger = logger;
         }
+        
+        // Command -> Event - how to track this simple use case?
+        // Command -> Event -> Event -> Command -> Event ... or this one?
 
         public async Task HandleAsync(CreateDiscount command, ICorrelationContext context)
         {
@@ -32,7 +36,14 @@ namespace DShop.Services.Discounts.Handlers.Discounts
             var customer = await _customersRepository.GetAsync(command.CustomerId);
             if (customer is null)
             {
+                //onError: -> publish CreateDiscountRejected
+                throw new DShopException("customer_not_found",
+                    $"Customer with id: '{command.CustomerId}' was not found.");
+                
                 _logger.LogWarning($"Customer with id: '{command.CustomerId}' was not found.");
+                await _busPublisher.PublishAsync(new CreateDiscountRejected(command.CustomerId,
+                    $"Customer with id: '{command.CustomerId}' was not found.",
+                    "customer_not_found"), context);
                 
                 return;
             }

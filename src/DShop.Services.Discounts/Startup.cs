@@ -37,7 +37,7 @@ namespace DShop.Services.Discounts
             services.AddInitializers(typeof(IMongoDbInitializer));
             services.AddConsul();
             services.RegisterServiceForwarder<IOrdersService>("orders-service");
-            
+
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
                 .AsImplementedInterfaces();
@@ -49,7 +49,7 @@ namespace DShop.Services.Discounts
             builder.AddRabbitMq();
 
             Container = builder.Build();
-            
+
             return new AutofacServiceProvider(Container);
         }
 
@@ -65,7 +65,8 @@ namespace DShop.Services.Discounts
             initializer.InitializeAsync();
             app.UseMvc();
             app.UseRabbitMq()
-                .SubscribeCommand<CreateDiscount>()
+                .SubscribeCommand<CreateDiscount>(onError: (cmd, ex)
+                    => new CreateDiscountRejected(cmd.CustomerId, ex.Message, "customer_not_found"))
                 .SubscribeEvent<CustomerCreated>(@namespace: "customers")
                 .SubscribeEvent<OrderCompleted>(@namespace: "orders");
             var serviceId = app.UseConsul();
