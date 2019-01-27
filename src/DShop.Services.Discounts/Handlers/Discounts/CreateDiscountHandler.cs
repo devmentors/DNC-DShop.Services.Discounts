@@ -40,12 +40,12 @@ namespace DShop.Services.Discounts.Handlers.Discounts
                 throw new DShopException("customer_not_found",
                     $"Customer with id: '{command.CustomerId}' was not found.");
                 
-                _logger.LogWarning($"Customer with id: '{command.CustomerId}' was not found.");
-                await _busPublisher.PublishAsync(new CreateDiscountRejected(command.CustomerId,
-                    $"Customer with id: '{command.CustomerId}' was not found.",
-                    "customer_not_found"), context);
+                // _logger.LogWarning($"Customer with id: '{command.CustomerId}' was not found.");
+                // await _busPublisher.PublishAsync(new CreateDiscountRejected(command.CustomerId,
+                //     $"Customer with id: '{command.CustomerId}' was not found.",
+                //     "customer_not_found"), context);
                 
-                return;
+                // return;
             }
 
             // Unique code validation
@@ -54,7 +54,6 @@ namespace DShop.Services.Discounts.Handlers.Discounts
             await _discountsRepository.AddAsync(discount);
             await _busPublisher.PublishAsync(new DiscountCreated(command.Id,
                 command.CustomerId, command.Code, command.Percentage), context);
-
             // Send an email about a new discount to the customer
         }
     }
