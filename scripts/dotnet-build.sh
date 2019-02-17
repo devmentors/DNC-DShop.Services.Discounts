@@ -6,4 +6,4 @@ case "$TRAVIS_BRANCH" in
     ;;
 esac
 
-dotnet build -c Release --no-cache
+dotnet build -c Release --no-cache --source https://www.myget.org/F/dnc-dshop/api/v3/index.json

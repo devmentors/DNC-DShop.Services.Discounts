@@ -3,6 +3,6 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DNC-DShop.Common\src\DShop.Common\DShop.Common.csproj" />
+    <PackageReference Include="DShop.Common_" Version="1.*"/>
   </ItemGroup>
 </Project>
