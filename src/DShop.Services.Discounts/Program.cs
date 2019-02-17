@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore;
+﻿using DShop.Common.Logging;
+using DShop.Common.Metrics;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace DShop.Services.Discounts
@@ -12,6 +14,8 @@ namespace DShop.Services.Discounts
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseLogging()
+                .UseAppMetrics();
     }
 }
