@@ -20,6 +20,7 @@ using DShop.Services.Discounts.Messages.Commands;
 using DShop.Services.Discounts.Messages.Events;
 using DShop.Services.Discounts.Metrics;
 using DShop.Services.Discounts.Services;
+using OpenTracing;
 
 namespace DShop.Services.Discounts
 {
