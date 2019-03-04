@@ -6,13 +6,16 @@ using DShop.Common;
 using DShop.Common.Messages;
 using DShop.Common.RabbitMq;
 using DShop.Services.Discounts.Domain;
+using DShop.Services.Discounts.IntegrationTests.Config;
 using RawRabbit.Configuration;
 using RawRabbit.Instantiation;
 using RawRabbit;
+using RawRabbit.Common;
 using RawRabbit.Enrichers.MessageContext;
+using Xunit;
 
 namespace DShop.Services.Discounts.IntegrationTests.Fixtures
-{
+{   
     public class RabbitMqFixture
     {
         private readonly RawRabbit.Instantiation.Disposable.BusClient _client;
@@ -29,7 +32,10 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
                     Port = 5672,
                     Username = "guest",
                     Password = "guest",
-
+                },
+                DependencyInjection = ioc =>
+                {
+                    ioc.AddSingleton<INamingConventions>(new RabbitMqNamingConventions("discounts"));
                 },
                 Plugins = p => p  
                     .UseAttributeRouting()
@@ -39,9 +45,9 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
             });
         }
 
-        public Task PublishAsync<TMessage>(TMessage message) where TMessage : class
+        public Task PublishAsync<TMessage>(TMessage message, string @namespace = null) where TMessage : class
             => _client.PublishAsync(message, ctx => 
-                ctx.UseMessageContext(CorrelationContext.Empty).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message))));
+                ctx.UseMessageContext(CorrelationContext.Empty).UsePublishConfiguration(p => p.WithRoutingKey(GetRoutingKey(@message, @namespace))));
         
         public async Task<TaskCompletionSource<Discount>> SubscribeAndGetAsync<TEvent>(
             Func<Guid, TaskCompletionSource<Discount>, Task> onMessageReceived, Guid id) where TEvent : IEvent
@@ -60,9 +66,9 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
             return taskCompletionSource;
         }
         
-        private string GetRoutingKey<T>(T message)
+        private string GetRoutingKey<T>(T message, string @namespace = null)
         {
-            var @namespace = "discounts";
+            @namespace = @namespace ?? "discounts";
             @namespace = string.IsNullOrWhiteSpace(@namespace) ? string.Empty : $"{@namespace}.";
 
             return $"{@namespace}{typeof(T).Name.Underscore()}".ToLowerInvariant();

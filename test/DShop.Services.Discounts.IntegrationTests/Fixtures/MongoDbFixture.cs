@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using DShop.Common.Mongo;
 using DShop.Services.Discounts.Domain;
 using MongoDB.Driver;
+using Xunit;
 
 namespace DShop.Services.Discounts.IntegrationTests.Fixtures
 {
@@ -17,6 +19,9 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
         {
             _client = new MongoClient("mongodb://localhost:27017");
             var database = _client.GetDatabase(DatabaseName);
+            
+            new MongoDbInitializer(database, null, new MongoDbOptions()).InitializeAsync().GetAwaiter().GetResult();
+            
             _collection = database.GetCollection<Discount>(CollectionName);
         }
         
@@ -27,8 +32,18 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
                 throw new ArgumentNullException(nameof(expectedId));
             }
 
-            var entity = await _collection.Find(d => d.Id == expectedId).FirstOrDefaultAsync();
-
+            Discount entity = null;
+            
+            try
+            {
+                entity = await _collection.Find(d => d.Id == expectedId).SingleOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
             if (entity is null)
             {
                 receivedTask.TrySetCanceled();

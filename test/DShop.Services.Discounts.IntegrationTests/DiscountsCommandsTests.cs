@@ -8,7 +8,7 @@ using Xunit;
 
 namespace DShop.Services.Discounts.IntegrationTests
 {
-    public class DiscountsCommandsTests: IClassFixture<MongoDbFixture>, IClassFixture<RabbitMqFixture>
+    public class DiscountsCommandsTests : IClassFixture<MongoDbFixture>, IClassFixture<RabbitMqFixture>
     {
         private readonly MongoDbFixture _mongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
@@ -22,7 +22,10 @@ namespace DShop.Services.Discounts.IntegrationTests
         [Fact]
         public async Task Create_Discount_Command_Should_Create_MongoEntity()
         {
-            var command = new CreateDiscount(Guid.NewGuid(), Guid.NewGuid(), "DISCOUNT", 10);
+            var customerId = Guid.NewGuid();
+            await _rabbitMqFixture.PublishAsync(new CustomerCreated(customerId, "test@test.com"), "customers");
+            
+            var command = new CreateDiscount(Guid.NewGuid(), customerId, "DISCOUNT", 10);
             var creationTask = await _rabbitMqFixture.SubscribeAndGetAsync<DiscountCreated>(_mongoDbFixture.GetMongoEntity, command.Id);
             await _rabbitMqFixture.PublishAsync(command);
             
