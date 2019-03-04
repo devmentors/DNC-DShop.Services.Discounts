@@ -44,7 +44,7 @@ namespace DShop.Services.Discounts
             services.AddTransient<IMetricsRegistry, MetricsRegistry>();
 
             var builder = new ContainerBuilder();
-            builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
+            builder.RegisterAssemblyTypes(typeof(Startup).Assembly)
                 .AsImplementedInterfaces();
             builder.Populate(services);
             builder.AddDispatchers();

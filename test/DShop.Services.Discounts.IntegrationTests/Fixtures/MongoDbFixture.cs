@@ -19,13 +19,15 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
         
         public MongoDbFixture()
         {
-            _client = new MongoClient("mongodb://localhost:27017");
+            _client = new MongoClient("mongodb://mongo_test:27017");
             _database = _client.GetDatabase(DatabaseName);
-            
-            new MongoDbInitializer(_database, null, new MongoDbOptions()).InitializeAsync().GetAwaiter().GetResult();
-            
+            InitializeMongo();
             _collection = _database.GetCollection<Discount>(CollectionName);
         }
+        
+        public void InitializeMongo()
+            => new MongoDbInitializer(_database, null, new MongoDbOptions())
+                .InitializeAsync().GetAwaiter().GetResult();
 
         public Task InsertAsync<TEntity>(string collectionName, TEntity entity) where TEntity : IIdentifiable
             => _database.GetCollection<TEntity>(collectionName).InsertOneAsync(entity);

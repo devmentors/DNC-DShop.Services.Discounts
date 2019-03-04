@@ -4,12 +4,16 @@ using DShop.Services.Discounts.Domain;
 using DShop.Services.Discounts.IntegrationTests.Fixtures;
 using DShop.Services.Discounts.Messages.Commands;
 using DShop.Services.Discounts.Messages.Events;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Shouldly;
 using Xunit;
 
 namespace DShop.Services.Discounts.IntegrationTests
 {
-    public class DiscountsCommandsTests : IClassFixture<MongoDbFixture>, IClassFixture<RabbitMqFixture>
+    public class DiscountsCommandsTests : 
+        IClassFixture<MongoDbFixture>, IClassFixture<RabbitMqFixture>
     {
         private readonly MongoDbFixture _mongoDbFixture;
         private readonly RabbitMqFixture _rabbitMqFixture;
@@ -18,6 +22,7 @@ namespace DShop.Services.Discounts.IntegrationTests
         {
             _mongoDbFixture = mongoFixture;
             _rabbitMqFixture = rabbitFixture;
+            var server = new TestServer(WebHost.CreateDefaultBuilder(null).UseStartup<Startup>());
         }
 
         [Fact]
