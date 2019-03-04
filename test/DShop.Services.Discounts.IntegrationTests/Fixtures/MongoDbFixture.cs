@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DShop.Common.Mongo;
+using DShop.Common.Types;
 using DShop.Services.Discounts.Domain;
 using MongoDB.Driver;
 using Xunit;
@@ -10,6 +11,7 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
     public class MongoDbFixture : IDisposable
     {
         private readonly IMongoClient _client;
+        private readonly IMongoDatabase _database;
         private readonly IMongoCollection<Discount> _collection;
         private const string CollectionName = "Discounts";
         private const string DatabaseName = "discounts-service";
@@ -18,12 +20,15 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
         public MongoDbFixture()
         {
             _client = new MongoClient("mongodb://localhost:27017");
-            var database = _client.GetDatabase(DatabaseName);
+            _database = _client.GetDatabase(DatabaseName);
             
-            new MongoDbInitializer(database, null, new MongoDbOptions()).InitializeAsync().GetAwaiter().GetResult();
+            new MongoDbInitializer(_database, null, new MongoDbOptions()).InitializeAsync().GetAwaiter().GetResult();
             
-            _collection = database.GetCollection<Discount>(CollectionName);
+            _collection = _database.GetCollection<Discount>(CollectionName);
         }
+
+        public Task InsertAsync<TEntity>(string collectionName, TEntity entity) where TEntity : IIdentifiable
+            => _database.GetCollection<TEntity>(collectionName).InsertOneAsync(entity);
         
         public async Task GetMongoEntity(Guid expectedId, TaskCompletionSource<Discount> receivedTask)
         {
