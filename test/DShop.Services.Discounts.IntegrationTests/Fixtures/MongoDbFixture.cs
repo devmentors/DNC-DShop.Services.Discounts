@@ -32,17 +32,7 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
                 throw new ArgumentNullException(nameof(expectedId));
             }
 
-            Discount entity = null;
-            
-            try
-            {
-                entity = await _collection.Find(d => d.Id == expectedId).SingleOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var entity = await _collection.Find(d => d.Id == expectedId).SingleOrDefaultAsync();
             
             if (entity is null)
             {
