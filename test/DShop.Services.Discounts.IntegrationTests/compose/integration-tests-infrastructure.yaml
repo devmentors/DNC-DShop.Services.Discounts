@@ -4,6 +4,7 @@ services:
   mongo_test:
     image: mongo:4
     container_name: mongo_test
+#    network_mode: host
     networks:
       - dshop
     volumes:
@@ -12,6 +13,7 @@ services:
   rabbitmq_test:
     image: rabbitmq:3-management
     container_name: rabbitmq_test
+#    network_mode: host
     networks:
       - dshop
     volumes: 
@@ -20,6 +22,7 @@ services:
   redis_test:
     image: redis
     container_name: redis_test
+#    network_mode: host
     networks:
       - dshop
     volumes: 

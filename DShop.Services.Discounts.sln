@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DShop.Services.Discounts", "src\DShop.Services.Discounts\DShop.Services.Discounts.csproj", "{E6141D63-DA1F-4D34-949E-CBE51B32A761}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{37847071-9826-4D3F-A516-CFBAE03310C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DShop.Services.Discounts.IntegrationTests", "test\DShop.Services.Discounts.IntegrationTests\DShop.Services.Discounts.IntegrationTests.csproj", "{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,20 @@ Global
 		{E6141D63-DA1F-4D34-949E-CBE51B32A761}.Release|x64.Build.0 = Release|Any CPU
 		{E6141D63-DA1F-4D34-949E-CBE51B32A761}.Release|x86.ActiveCfg = Release|Any CPU
 		{E6141D63-DA1F-4D34-949E-CBE51B32A761}.Release|x86.Build.0 = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|x64.Build.0 = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|x64.ActiveCfg = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|x64.Build.0 = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|x86.ActiveCfg = Release|Any CPU
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E4541EB4-C8C8-48D4-BA8C-D2987B5BAC54} = {37847071-9826-4D3F-A516-CFBAE03310C5}
 	EndGlobalSection
 EndGlobal
