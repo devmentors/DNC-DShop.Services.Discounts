@@ -27,7 +27,7 @@ namespace DShop.Services.Discounts.IntegrationTests.Fixtures
             {
                 ClientConfiguration = new RawRabbitConfiguration
                 {
-                    Hostnames = new List<string> { "rabbitmq_test" }, // localhost
+                    Hostnames = new List<string> { "localhost" }, // localhost
                     VirtualHost = "/",
                     Port = 5672,
                     Username = "guest",
