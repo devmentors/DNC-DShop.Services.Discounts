@@ -1,0 +1,10 @@
+FROM microsoft/dotnet:2.2-sdk AS build-env
+WORKDIR /app
+
+# Copy everything else and build
+COPY ./src/DShop.Services.Discounts ./src/DShop.Services.Discounts
+RUN dotnet build -c Release ./src/DShop.Services.Discounts
+COPY ./test/DShop.Services.Discounts.IntegrationTests/ ./test/DShop.Services.Discounts.IntegrationTests/
+RUN dotnet build -c Release ./test/DShop.Services.Discounts.IntegrationTests
+
+ENTRYPOINT ["dotnet", "test","./test/DShop.Services.Discounts.IntegrationTests/DShop.Services.Discounts.IntegrationTests.csproj","--no-build","--no-restore","--configuration","Release"]

@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  mongo_test:
+    image: mongo:4
+    container_name: mongo_test
+#    network_mode: host
+    networks:
+      - dshop
+    volumes:
+      - mongo:/data/db
+
+  rabbitmq_test:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_test
+#    network_mode: host
+    networks:
+      - dshop
+    volumes: 
+      - rabbitmq:/var/lib/rabbitmq
+
+  redis_test:
+    image: redis
+    container_name: redis_test
+#    network_mode: host
+    networks:
+      - dshop
+    volumes: 
+      - redis:/data
+
+networks:
+  dshop:
+    name: dshop-tests-network
+
+volumes:
+  mongo:
+    driver: local
+  rabbitmq:
+    driver: local
+  redis:
+    driver: local
